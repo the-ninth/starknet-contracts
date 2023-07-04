@@ -1,0 +1,22 @@
+{
+  "name": "the-ninth-starknet-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "starknet",
+    "the-ninth"
+  ],
+  "author": "The Ninth",
+  "license": "ISC",
+  "devDependencies": {
+    "@shardlabs/starknet-hardhat-plugin": "^0.8.0-alpha.3",
+    "@types/mocha": "^10.0.1",
+    "hardhat": "^2.16.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  }
+}

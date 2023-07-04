@@ -1,0 +1,31 @@
+[package]
+name = "ninth"
+version = "0.1.0"
+cairo-version = "2.0.0-rc5"
+
+
+# See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest
+
+[dependencies]
+# openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", branch = "cairo-1" }
+# foo = { path = "vendor/foo" }
+starknet = "2.0.0-rc5"
+
+
+[[target.starknet-contract]]
+# Enable Sierra codegen.
+sierra = true
+ 
+# Enable CASM codegen.
+casm = true
+# Emit Python-powered hints in order to run compiled CASM class with legacy Cairo VM.
+casm-add-pythonic-hints = true
+ 
+# Enable allowed libfuncs validation.
+allowed-libfuncs = true
+# Raise errors instead of warnings if disallowed libfuncs are found.
+allowed-libfuncs-deny = true
+# Reference to the libfuncs allowlist used for validation.
+# - Use `allowed-libfuncs-list.name` to use built-in named allowlist.
+# - Use `allowed-libfuncs-list.path` to read an allowlist from file.
+# allowed-libfuncs-list = { name = "experimental" } # Cairo compiler defined
