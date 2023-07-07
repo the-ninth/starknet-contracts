@@ -1,4 +1,3 @@
-use core::result::ResultTrait;
 use starknet::{ContractAddress, ClassHash};
 
 #[starknet::interface]
@@ -155,27 +154,21 @@ mod ERC20 {
         assert(!recipient.is_zero(), 'ERC20: mint to 0');
         self.ERC20_total_supply.write(self.ERC20_total_supply.read() + amount);
         self.ERC20_balances.write(recipient, self.ERC20_balances.read(recipient) + amount);
-        self.emit(Event::Transfer(
-            Transfer { from: Zeroable::zero(), to: recipient, amount: amount}
-        ));
+        self.emit(Transfer { from: Zeroable::zero(), to: recipient, amount: amount});
     }
 
     fn _burn(ref self: ContractState, account: ContractAddress, amount: u256) {
         assert(!account.is_zero(), 'ERC20: burn from 0');
         self.ERC20_total_supply.write(self.ERC20_total_supply.read() - amount);
         self.ERC20_balances.write(account, self.ERC20_balances.read(account) - amount);
-        self.emit(Event::Transfer(
-            Transfer { from: account, to: Zeroable::zero(), amount: amount}
-        ));
+        self.emit(Transfer { from: account, to: Zeroable::zero(), amount: amount});
     }
 
     fn _approve(ref self: ContractState, owner: ContractAddress, spender: ContractAddress, amount: u256) {
         assert(!owner.is_zero(), 'ERC20: approve from 0');
         assert(!spender.is_zero(), 'ERC20: approve to 0');
         self.ERC20_allowances.write((owner, spender), amount);
-        self.emit(Event::Approval(
-            Approval { owner: owner, spender: spender, amount: amount }
-        ));
+        self.emit(Approval { owner: owner, spender: spender, amount: amount });
     }
 
     fn _transfer(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) {
@@ -183,9 +176,7 @@ mod ERC20 {
         assert(!recipient.is_zero(), 'ERC20: transfer to 0');
         self.ERC20_balances.write(sender, self.ERC20_balances.read(sender) - amount);
         self.ERC20_balances.write(recipient, self.ERC20_balances.read(recipient) + amount);
-        self.emit(Event::Transfer(
-            Transfer { from: sender, to: recipient, amount: amount}
-        ));
+        self.emit(Transfer { from: sender, to: recipient, amount: amount});
     }
 
     fn _spend_allowance(ref self: ContractState, owner: ContractAddress, spender: ContractAddress, amount: u256) {
