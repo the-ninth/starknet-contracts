@@ -89,7 +89,6 @@ mod seance {
 
     #[derive(Drop, starknet::Event)]
     struct Pray {
-        #[key]
         pentagram_num: u128,
         token_address: ContractAddress,
         prayer_address: ContractAddress,
@@ -101,14 +100,12 @@ mod seance {
 
     #[derive(Drop, starknet::Event)]
     struct PentagramDone {
-        #[key]
         pentagram_num: u128,
         request_id: u128,
     }
 
     #[derive(Drop, starknet::Event)]
     struct PentagramEnd {
-        #[key]
         pentagram_num: u128,
         seed: u128,
         hit_number: u8,
@@ -206,7 +203,7 @@ mod seance {
         assert(owner==caller, 'Seance: caller is not owner');
     }
 
-    fn _assert_onlySeance_operator(self: @ContractState) {
+    fn _assert_only_operator(self: @ContractState) {
         let caller = get_caller_address();
         let owner = self.Seance_operator.read();
         assert(owner==caller, 'Seance: caller is not operator');
@@ -279,7 +276,7 @@ mod seance {
         self.Seance_pentagram_prayers_length.write(pentagram.pentagram_num, position);
         self.emit(
             Pray {
-                pentagram_num: pentagram_num, token_address: token_address, prayer_address: caller,
+                pentagram_num: pentagram.pentagram_num, token_address: token_address, prayer_address: caller,
                 value: value, position: position, number_lower: number_lower, number_higher: number_higher,
             }
         );
@@ -288,7 +285,7 @@ mod seance {
         if (length == 4) {
             status = PentagramStatusDone;
             let random_producer = self.Seance_random_producer.read();
-            request_id = IRandomProducerDispatcher{contract_address: token_address}.request_random();
+            request_id = IRandomProducerDispatcher{contract_address: random_producer}.requestRandom();
             assert(request_id!=0, 'request id is zero');
             self.Seance_pentagram_num_by_request_id.write(request_id, pentagram.pentagram_num);
             self.emit(
@@ -354,9 +351,9 @@ mod seance {
 
     fn _has_conflict_pray(self: @ContractState, pentagram_num: u128, number_lower: u8, number_higher: u8) -> bool {
         let length = self.Seance_pentagram_prayers_length.read(pentagram_num);
-        let mut i = 0;
+        let mut i = 1;
         loop {
-            if i==length {
+            if i>length {
                 break (false);
             }
             let pentagram_prayer = self.Seance_pentagram_prayers_by_position.read((pentagram_num, i));
@@ -418,8 +415,9 @@ mod seance {
         let total_value_u512: u512 = u512{limb0: total_value.low, limb1: total_value.high, limb2: 0, limb3: 0};
         let (q, _) = u512_safe_div_rem_by_u256(total_value_u512, u256_try_as_non_zero(4).unwrap());
         let distribute_value = u256{low: q.limb0, high: q.limb1};
-        let mut i = 1_u8;
+        let mut i = 0_u8;
         loop {
+            i += 1;
             if i > 5 {
                 break ();
             }
@@ -428,7 +426,6 @@ mod seance {
                 continue;
             }
             IERC20Dispatcher{contract_address: pentagram.token}.transfer(prayer.prayer_address, distribute_value);
-            i += 1;
         };
         pentagram.status = PentagramStatusEnd;
         pentagram.seed = seed;
