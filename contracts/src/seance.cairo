@@ -1,6 +1,6 @@
 use starknet::{ContractAddress, ClassHash};
 
-#[derive(Drop, Serde, storage_access::StorageAccess)]
+#[derive(Drop, Serde, starknet::Store)]
 struct Pentagram {
     token: ContractAddress,
     pentagram_num: u128,
@@ -13,7 +13,7 @@ struct Pentagram {
     expire_time: u64,
 }
 
-#[derive(Drop, Serde, storage_access::StorageAccess)]
+#[derive(Drop, Serde, starknet::Store)]
 struct PentagramPrayer {
     prayer_address: ContractAddress,
     position: u8,

@@ -18,7 +18,7 @@ trait IRandomConsumer<TContractState> {
     fn fulfillRandomness(ref self: TContractState, request_id: u128, randomness: u128);
 }
 
-#[derive(Drop, Copy, Serde, storage_access::StorageAccess)]
+#[derive(Drop, Copy, Serde, starknet::Store)]
 struct Request {
     consumer: ContractAddress,
     randomness: u128,
