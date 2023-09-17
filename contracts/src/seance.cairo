@@ -52,7 +52,7 @@ mod seance {
     use result::ResultTrait;
     use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp, get_contract_address, get_execution_info, contract_address_const};
     use starknet::syscalls::replace_class_syscall;
-    use ninth::token::ierc20::{IERC20DispatcherTrait, IERC20Dispatcher};
+    use ninth::erc::ierc20::{IERC20DispatcherTrait, IERC20Dispatcher};
     use ninth::random::{IRandomProducerDispatcherTrait, IRandomProducerDispatcher};
 
     const PentagramStatusNone: u8 = 0;

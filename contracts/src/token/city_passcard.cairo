@@ -1,39 +1,12 @@
 use starknet::{ContractAddress, ClassHash};
 
 #[starknet::interface]
-trait IERC721<TContractState> {
-    fn name(self: @TContractState) -> felt252;
-    fn symbol(self: @TContractState) -> felt252;
-    fn balanceOf(self: @TContractState, account: ContractAddress) -> u256;
-    fn ownerOf(self: @TContractState, token_id: u256) -> ContractAddress;
-    fn getApproved(self: @TContractState, token_id: u256) -> ContractAddress;
-    fn isApprovedForAll(self: @TContractState, owner: ContractAddress, operator: ContractAddress) -> bool;
-    fn tokenURI(self: @TContractState, token_id: u256) -> Array<felt252>;
-    fn transferFrom(ref self: TContractState, from: ContractAddress, to: ContractAddress, token_id: u256);
-    fn safeTransferFrom(ref self: TContractState, from: ContractAddress, to: ContractAddress, token_id: u256, data: Array<felt252>);
-    fn approve(ref self: TContractState, to: ContractAddress, token_id: u256);
-    fn setApprovalForAll(ref self: TContractState, operator: ContractAddress, approved: bool);
-}
-
-#[starknet::interface]
-trait IERC721Enumerable<TContractState> {
-    fn totalSupply(self: @TContractState) -> u256;
-    fn tokenByIndex(self: @TContractState, index: u256) -> u256;
-    fn tokenOfOwnerByIndex(self: @TContractState, owner: ContractAddress, index: u256) -> u256;
-}
-
-#[starknet::interface]
 trait IAccessControl<TContractState> {
     fn hasRole(self: @TContractState, role: felt252, account: ContractAddress) -> bool;
     fn getRoleAdmin(self: @TContractState, role: felt252) -> felt252;
     fn grantRole(ref self: TContractState, role: felt252, account: ContractAddress);
     fn revokeRole(ref self: TContractState, role: felt252, account: ContractAddress);
     fn renounceRole(ref self: TContractState, role: felt252, account: ContractAddress);
-}
-
-#[starknet::interface]
-trait IERC165<TContractState> {
-    fn supportsInterface(self: @TContractState, interface_id: u32) -> bool;
 }
 
 #[starknet::interface]
@@ -48,22 +21,19 @@ trait ICityPasscard<TContractState> {
 #[starknet::contract]
 mod city_passcard {
 
-    use super::{IERC721, IERC721Enumerable, IAccessControl, IERC165, IERC165Dispatcher, ICityPasscard};
+    use super::{IAccessControl, ICityPasscard};
+    use ninth::erc::ierc165::{IERC165, IERC165DispatcherTrait, IERC165Dispatcher, IERC165Id};
+    use ninth::erc::ierc721::{IERC721, IERC721Enumerable, IERC721TokenReceiverDispatcherTrait, IERC721TokenReceiverDispatcher, IERC721TokenReceiverId, IERC721Id, IERC721MetadataId, IERC721EnumerableId};
     use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starknet::syscalls::replace_class_syscall;
     use zeroable::Zeroable;
     use option::OptionTrait;
-    use array::{ArrayTrait};
+    use array::ArrayTrait;
     use result::ResultTrait;
     use traits::{Into, TryInto};
 
-    
-    const IERC721TokenReceiverId: u32 = 0x150b7a02;
-    const IERC721Id: u32 = 0x80ac58cd;
-    const IERC721MetadataId: u32 = 0x5b5e139f;
-    const IERC165Id: u32 = 0x01ffc9a7;
-    const IERC721EnumerableId: u32 = 0x780e9d63;
+    const IAccountId: u32 = 0xa66bd575;
 
     const RoleDefaultAdmin: felt252 = 0x0;
     const RoleMinter: felt252 = 0x14a29a7a52126dd9ed87a315096a38eeae324f6f3ca318bc444b62a9ed9375a;
@@ -211,9 +181,13 @@ mod city_passcard {
         }
 
         fn safeTransferFrom(
-            ref self: ContractState,from: ContractAddress, to: ContractAddress, token_id: u256, data: Array<felt252>
+            ref self: ContractState,from: ContractAddress, to: ContractAddress, token_id: u256, data: Span<felt252>
         ) {
-            panic_with_felt252('not implemented');
+            assert(
+                _is_approved_or_owner(@self, get_caller_address(), token_id), 'ERC721: unauthorized caller'
+            );
+            _transfer(ref self, from, to, token_id);
+            assert(_check_on_erc721_received(from, to, token_id, data), 'ERC721: unsafe transfer');
         }
 
     }
@@ -503,6 +477,18 @@ mod city_passcard {
 
     fn _get_role_admin(self: @ContractState, role: felt252) -> felt252 {
         self.AccessControl_role_admin.read(role)
+    }
+
+    fn _check_on_erc721_received(
+        from: ContractAddress, to: ContractAddress, token_id: u256, data: Span<felt252>
+    ) -> bool {
+        if (IERC165Dispatcher{contract_address: to}.supportsInterface(IERC721TokenReceiverId)) {
+            IERC721TokenReceiverDispatcher{contract_address: to}.onERC721Received(
+                get_caller_address(), from, token_id, data
+                ) == IERC721TokenReceiverId
+        } else {
+            IERC165Dispatcher{contract_address: to}.supportsInterface(IAccountId)
+        }
     }
 
 }

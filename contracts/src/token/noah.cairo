@@ -17,7 +17,7 @@ trait IAccessControl<TContractState> {
 #[starknet::contract]
 mod noah {
 
-    use ninth::token::ierc20::IERC20;
+    use ninth::erc::ierc20::IERC20;
     use ninth::token::imintable::IMintable;
     use super::IAccessControl;
     use integer::BoundedInt;

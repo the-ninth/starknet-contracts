@@ -7,7 +7,7 @@ trait IUpgrade<TContractState> {
 
 #[starknet::contract]
 mod ERC20 {
-    use ninth::token::ierc20::IERC20;
+    use ninth::erc::ierc20::IERC20;
     use ninth::token::imintable::IMintable;
     use integer::BoundedInt;
     use zeroable::Zeroable;
