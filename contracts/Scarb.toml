@@ -28,4 +28,4 @@ allowed-libfuncs-deny = true
 # Reference to the libfuncs allowlist used for validation.
 # - Use `allowed-libfuncs-list.name` to use built-in named allowlist.
 # - Use `allowed-libfuncs-list.path` to read an allowlist from file.
-allowed-libfuncs-list = { name = "all" }
+allowed-libfuncs-list = { name = "audited" }
