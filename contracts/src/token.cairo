@@ -4,4 +4,4 @@ mod noah;
 mod mystery_box;
 mod city_passcard;
 mod erc1155_burnable;
-mod fist_achievement;
+mod fist_flesh;

@@ -10,16 +10,16 @@ trait IAccessControl<TContractState> {
 }
 
 #[starknet::interface]
-trait IFistAchievement<TContractState> {
+trait IFistFlesh<TContractState> {
     fn setTokenUri(ref self: TContractState, uri: Array<felt252>);
     fn mint(ref self: TContractState, to: ContractAddress, token_type: u32) -> u256;
     fn upgrade(ref self: TContractState, class_hash: ClassHash);
 }
 
 #[starknet::contract]
-mod fist_achievement {
+mod fist_flesh {
 
-    use super::{IAccessControl, IFistAchievement};
+    use super::{IAccessControl, IFistFlesh};
     use ninth::erc::ierc165::{IERC165, IERC165DispatcherTrait, IERC165Dispatcher, IERC165Id};
     use ninth::erc::ierc721::{IERC721, IERC721Enumerable, IERC721TokenReceiverDispatcherTrait, IERC721TokenReceiverDispatcher, IERC721TokenReceiverId, IERC721Id, IERC721MetadataId, IERC721EnumerableId};
     use starknet::{ContractAddress, ClassHash};
@@ -49,7 +49,7 @@ mod fist_achievement {
         ERC721_token_uri: LegacyMap<usize, felt252>,
         AccessControl_role_admin: LegacyMap<felt252, felt252>,
         AccessControl_role_member: LegacyMap<(felt252, ContractAddress), bool>,
-        FistAchievement_token_counter: u256,
+        FistFlesh_token_counter: u256,
     }
 
     #[event]
@@ -217,7 +217,7 @@ mod fist_achievement {
     }
 
     #[external(v0)]
-    impl FistAchievement of IFistAchievement<ContractState> {
+    impl FistFlesh of IFistFlesh<ContractState> {
 
         fn setTokenUri(ref self: ContractState, uri: Array<felt252>) {
             _assert_only_role(@self, RoleDefaultAdmin);
@@ -235,10 +235,10 @@ mod fist_achievement {
 
         fn mint(ref self: ContractState, to: ContractAddress, token_type: u32) -> u256 {
             _assert_only_role(@self, RoleMinter);
-            let count = self.FistAchievement_token_counter.read();
+            let count = self.FistFlesh_token_counter.read();
             let token_id = count + 1;
             _mint(ref self, to, token_id);
-            self.FistAchievement_token_counter.write(token_id);
+            self.FistFlesh_token_counter.write(token_id);
             token_id
         }
 
