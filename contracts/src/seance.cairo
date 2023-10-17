@@ -68,7 +68,7 @@ mod seance {
         Seance_owner: ContractAddress,
         Seance_operator: ContractAddress,
         Seance_token_option_enabled: LegacyMap<ContractAddress, bool>,
-        SeanceSeance_token_option_values_length: LegacyMap<ContractAddress, usize>,
+        Seance_token_option_values_length: LegacyMap<ContractAddress, usize>,
         Seance_token_option_values: LegacyMap<(ContractAddress, usize), u256>,
         Seance_pentagram_counter: u128,
         Seance_pentagrams: LegacyMap<u128, Pentagram>,
@@ -221,7 +221,7 @@ mod seance {
 
     fn _is_token_value_enabled(self: @ContractState, token_address: ContractAddress, value: u256) -> bool {
         let mut i : usize = 0;
-        let length = self.SeanceSeance_token_option_values_length.read(token_address);
+        let length = self.Seance_token_option_values_length.read(token_address);
         loop {
             if i == length {
                 break (false);
@@ -249,7 +249,7 @@ mod seance {
             self.Seance_token_option_values.write((token_address, i), *value);
             i += 1;
         };
-        self.SeanceSeance_token_option_values_length.write(token_address, length);
+        self.Seance_token_option_values_length.write(token_address, length);
     }
 
     fn _pray(ref self: ContractState, token_address: ContractAddress, value: u256, pentagram_num: u128, new_pentagram_when_conflict: bool,
@@ -316,14 +316,7 @@ mod seance {
         assert(number_lower < 10 && number_higher<10 && number_lower!=number_higher, 'Seance: invalid numbers');
         
         if (pentagram_num == 0) {
-            let mut pentagram_num = self.Seance_pentagram_counter.read();
-            pentagram_num += 1;
-            self.Seance_pentagram_counter.write(pentagram_num);
-            let block_time = get_block_timestamp();
-            return Pentagram {
-                token: token_address, pentagram_num: pentagram_num, value: value, status: PentagramStatusPlaying, seed: 0,
-                request_id: 0, hit_number: 0, hit_prayer_position: 0, expire_time: block_time + ExpireDuration
-            };
+            return _new_pentagram(ref self, token_address, value);
         }
         let pentagram = self.Seance_pentagrams.read(pentagram_num);
         assert(pentagram.status==PentagramStatusPlaying, 'invalid pentagram status');
@@ -380,7 +373,7 @@ mod seance {
     }
 
     fn _get_token_option_values(self: @ContractState, token_address: ContractAddress) -> Array<u256> {
-        let length = self.SeanceSeance_token_option_values_length.read(token_address);
+        let length = self.Seance_token_option_values_length.read(token_address);
         let mut i = 0;
         let mut values: Array<u256> = ArrayTrait::new();
         loop {

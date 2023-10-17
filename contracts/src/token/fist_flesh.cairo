@@ -12,7 +12,7 @@ trait IAccessControl<TContractState> {
 #[starknet::interface]
 trait IFistFlesh<TContractState> {
     fn setTokenUri(ref self: TContractState, uri: Array<felt252>);
-    fn mint(ref self: TContractState, to: ContractAddress, token_type: u32) -> u256;
+    fn mint(ref self: TContractState, to: ContractAddress) -> u256;
     fn upgrade(ref self: TContractState, class_hash: ClassHash);
 }
 
@@ -233,8 +233,10 @@ mod fist_flesh {
             self.ERC721_token_uri_len.write(uri_len);
         }
 
-        fn mint(ref self: ContractState, to: ContractAddress, token_type: u32) -> u256 {
+        fn mint(ref self: ContractState, to: ContractAddress) -> u256 {
             _assert_only_role(@self, RoleMinter);
+            let balance = self.balanceOf(to);
+            assert(balance==0, 'duplicated mint');
             let count = self.FistFlesh_token_counter.read();
             let token_id = count + 1;
             _mint(ref self, to, token_id);
