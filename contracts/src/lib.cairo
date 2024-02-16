@@ -3,3 +3,4 @@ mod seance;
 mod random;
 mod util;
 mod erc;
+mod campaign;

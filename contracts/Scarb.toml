@@ -1,15 +1,15 @@
 [package]
 name = "ninth"
 version = "0.1.0"
-cairo-version = "2.2.0"
+cairo-version = ">=2.3.1"
 
 
 # See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest
 
 [dependencies]
-# openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", branch = "cairo-1" }
-# foo = { path = "vendor/foo" }
-starknet = "2.2.0"
+starknet = ">=2.3.1"
+openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts", rev = "cd0ce89"}
+
 
 
 [[target.starknet-contract]]
