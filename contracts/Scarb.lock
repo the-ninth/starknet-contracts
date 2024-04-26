@@ -10,5 +10,5 @@ dependencies = [
 
 [[package]]
 name = "openzeppelin"
-version = "0.8.0"
-source = "git+https://github.com/OpenZeppelin/cairo-contracts?rev=cd0ce89#cd0ce89cffda855768b4ed2c4a9b5aaa2479b0fa"
+version = "0.10.0"
+source = "git+https://github.com/OpenZeppelin/cairo-contracts?tag=v0.10.0#d77082732daab2690ba50742ea41080eb23299d3"

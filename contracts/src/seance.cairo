@@ -1,5 +1,4 @@
 use starknet::{ContractAddress, ClassHash};
-use ninth::campaign::chrismas::IChrismasCampaignSafeDispatcher;
 
 #[derive(Drop, Serde, starknet::Store)]
 struct Pentagram {
@@ -43,15 +42,9 @@ trait ISeance<TContractState> {
     
 }
 
-#[starknet::interface]
-trait IChrismas<TContractState> {
-    fn setChrismas(ref self: TContractState, chrismas: IChrismasCampaignSafeDispatcher);
-}
-
 #[starknet::contract]
 mod seance {
     use super::{Pentagram, PentagramPrayer, ISeance};
-    use super::IChrismas;
     use array::ArrayTrait;
     use box::BoxTrait;
     use cmp::{min, max};
@@ -64,7 +57,6 @@ mod seance {
     use starknet::syscalls::replace_class_syscall;
     use ninth::erc::ierc20::{IERC20DispatcherTrait, IERC20Dispatcher};
     use ninth::random::{IRandomProducerDispatcherTrait, IRandomProducerDispatcher};
-    use ninth::campaign::chrismas::{IChrismasCampaignSafeDispatcherTrait, IChrismasCampaignSafeDispatcher};
 
     const PentagramStatusNone: u8 = 0;
     const PentagramStatusPlaying: u8 = 1;
@@ -88,7 +80,6 @@ mod seance {
         Seance_pentagram_num_by_request_id: LegacyMap<u128, u128>,
         Seance_random_producer: ContractAddress,
         // Seance_token_fees: LegacyMap<ContractAddress, u256>,
-        Seance_chrismas: IChrismasCampaignSafeDispatcher,
     }
 
     #[event]
@@ -191,10 +182,6 @@ mod seance {
         fn pray(ref self: ContractState, token_address: ContractAddress, value: u256, pentagram_num: u128, new_pentagram_when_conflict: bool, number_lower: u8, number_higher: u8) -> u128 {
             let caller = get_caller_address();
             let id = self._pray(token_address, value, pentagram_num, new_pentagram_when_conflict, number_lower, number_higher);
-            let dispatcher = self.Seance_chrismas.read();
-            if dispatcher.contract_address.is_non_zero() {
-                dispatcher.draw(caller);
-            }
             id
         }
         
@@ -211,14 +198,6 @@ mod seance {
             self._assert_only_owner();
             replace_class_syscall(class_hash).unwrap();
             self.emit(Upgraded{class_hash: class_hash});
-        }
-    }
-
-    #[external(v0)]
-    impl Chrismas of IChrismas<ContractState> {
-        fn setChrismas(ref self: ContractState, chrismas: IChrismasCampaignSafeDispatcher) {
-            self._assert_only_owner();
-            self.Seance_chrismas.write(chrismas);
         }
     }
 
