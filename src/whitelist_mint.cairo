@@ -100,7 +100,6 @@ mod whitelist_mint {
             let mut whitelist = self.available_mint.read((account, token_id));
             whitelist.total_mintable = total_mintable;
             self.available_mint.write((account, token_id), whitelist);
-
         }
 
         fn add_whitelist(ref self: ContractState, account: ContractAddress, token_id: u256, mintable: u32) {

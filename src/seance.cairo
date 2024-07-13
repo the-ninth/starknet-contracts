@@ -180,7 +180,6 @@ mod seance {
         // }
 
         fn pray(ref self: ContractState, token_address: ContractAddress, value: u256, pentagram_num: u128, new_pentagram_when_conflict: bool, number_lower: u8, number_higher: u8) -> u128 {
-            let caller = get_caller_address();
             let id = self._pray(token_address, value, pentagram_num, new_pentagram_when_conflict, number_lower, number_higher);
             id
         }
