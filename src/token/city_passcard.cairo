@@ -125,7 +125,7 @@ mod city_passcard {
         _initializer(ref self, name, symbol, owner);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC721 of IERC721<ContractState> {
 
         fn name(self: @ContractState) -> felt252 {
@@ -192,7 +192,7 @@ mod city_passcard {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC721Enumerable of IERC721Enumerable<ContractState> {
         fn totalSupply(self: @ContractState) -> u256 {
             self.ERC721Enumerable_all_tokens_len.read()
@@ -211,7 +211,7 @@ mod city_passcard {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccessControl of IAccessControl<ContractState> {
 
         fn hasRole(self: @ContractState, role: felt252, account: ContractAddress) -> bool {
@@ -242,7 +242,7 @@ mod city_passcard {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl CityPasscard of ICityPasscard<ContractState> {
 
         fn getPasscardCity(self: @ContractState, token_id: u256) -> u32 {
@@ -298,7 +298,7 @@ mod city_passcard {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC165 of IERC165<ContractState> {
 
         fn supportsInterface(self: @ContractState, interface_id: u32) -> bool {

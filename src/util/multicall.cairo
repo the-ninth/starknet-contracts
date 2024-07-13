@@ -28,7 +28,7 @@ mod multicall {
     fn constructor(ref self: ContractState) {
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Multicall of IMulticall<ContractState> {
         fn aggregate(self: @ContractState, calls: Array<Call>) -> Array<Span<felt252>> {
             let mut resp: Array<Span<felt252>> = array![];

@@ -116,7 +116,7 @@ mod fist_flesh {
         _initializer(ref self, name, symbol, owner);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC721 of IERC721<ContractState> {
 
         fn name(self: @ContractState) -> felt252 {
@@ -185,7 +185,7 @@ mod fist_flesh {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccessControl of IAccessControl<ContractState> {
 
         fn hasRole(self: @ContractState, role: felt252, account: ContractAddress) -> bool {
@@ -216,7 +216,7 @@ mod fist_flesh {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl FistFlesh of IFistFlesh<ContractState> {
 
         fn setTokenUri(ref self: ContractState, uri: Array<felt252>) {
@@ -252,7 +252,7 @@ mod fist_flesh {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC165 of IERC165<ContractState> {
 
         fn supportsInterface(self: @ContractState, interface_id: u32) -> bool {

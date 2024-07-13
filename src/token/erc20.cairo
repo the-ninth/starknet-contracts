@@ -61,7 +61,7 @@ mod ERC20 {
     }
 
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC20 of IERC20<ContractState> {
         fn name(self: @ContractState) -> felt252 {
             self.ERC20_name.read()
@@ -118,14 +118,14 @@ mod ERC20 {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Mintable of IMintable<ContractState> {
         fn mint(ref self: ContractState, to: ContractAddress, amount: u256) {
             _mint(ref self, to, amount);
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Upgrade of super::IUpgrade<ContractState> {
         fn upgrade(ref self: ContractState, class_hash: ClassHash) {
             replace_class_syscall(class_hash).unwrap();

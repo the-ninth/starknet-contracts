@@ -63,7 +63,7 @@ mod random_producer {
         self.RandomProducer_request_id_counter.write(1000);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl RandomProducer of IRandomProducer<ContractState> {
 
         fn getOwner(self: @ContractState) -> ContractAddress {

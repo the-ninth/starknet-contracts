@@ -126,7 +126,7 @@ mod seance {
         self._initializer(owner, operator);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Seance of ISeance<ContractState> {
 
         fn getPentagram(self: @ContractState, pentagram_num: u128) -> (Pentagram, Array<PentagramPrayer>) {

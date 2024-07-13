@@ -98,7 +98,7 @@ mod chrismas {
         self.day_limit.write(day_limit);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ChrismasCampaign of IChrismasCampaign<ContractState> {
         fn timerange(self: @ContractState) -> (u64, u64) {
             (self.start_time.read(), self.end_time.read())

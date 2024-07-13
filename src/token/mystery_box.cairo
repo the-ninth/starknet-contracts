@@ -121,7 +121,7 @@ mod mystery_box {
         _initializer(ref self, name, symbol, owner);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC721 of IERC721<ContractState> {
 
         fn name(self: @ContractState) -> felt252 {
@@ -188,7 +188,7 @@ mod mystery_box {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccessControl of IAccessControl<ContractState> {
 
         fn hasRole(self: @ContractState, role: felt252, account: ContractAddress) -> bool {
@@ -219,7 +219,7 @@ mod mystery_box {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl MysteryBox of IMysteryBox<ContractState> {
 
         fn getTokenType(self: @ContractState, token_id: u256) -> u32 {
@@ -282,7 +282,7 @@ mod mystery_box {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC165 of IERC165<ContractState> {
 
         fn supportsInterface(self: @ContractState, interface_id: u32) -> bool {

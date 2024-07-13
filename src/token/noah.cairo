@@ -102,7 +102,7 @@ mod noah {
     }
 
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC20 of IERC20<ContractState> {
         
         fn name(self: @ContractState) -> felt252 {
@@ -160,7 +160,7 @@ mod noah {
 
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Mintable of IMintable<ContractState> {
         fn mint(ref self: ContractState, to: ContractAddress, amount: u256) {
             _assert_only_role(@self, RoleMinter);
@@ -168,7 +168,7 @@ mod noah {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl Upgrade of super::IUpgrade<ContractState> {
         fn upgrade(ref self: ContractState, class_hash: ClassHash) {
             _assert_only_role(@self, RoleUpgrader);
@@ -176,7 +176,7 @@ mod noah {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccessControl of IAccessControl<ContractState> {
 
         fn hasRole(self: @ContractState, role: felt252, account: ContractAddress) -> bool {

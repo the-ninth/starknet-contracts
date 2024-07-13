@@ -131,7 +131,7 @@ mod erc1155_burnable {
         self._grant_role(RoleDefaultAdmin, owner);
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl AccessControl of IAccessControl<ContractState> {
 
         fn hasRole(self: @ContractState, role: felt252, account: ContractAddress) -> bool {
@@ -161,7 +161,7 @@ mod erc1155_burnable {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC1155Burnable of IERC1155Burnable<ContractState> {
         fn setTokenUri(ref self: ContractState, id: u256, uri: Span<felt252>) {
             self._assert_only_role(RoleAdmin);
@@ -209,14 +209,14 @@ mod erc1155_burnable {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC165 of IERC165<ContractState> {
         fn supportsInterface(self: @ContractState, interface_id: u32) -> bool {
             interface_id==IERC165Id || interface_id==IERC1155Id || interface_id==IERC1155MetadataURIId
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC1155 of IERC1155<ContractState> {
         fn balanceOf(self: @ContractState, account: ContractAddress, id: u256) -> u256 {
             self.ERC1155_balances.read((id, account))
@@ -258,7 +258,7 @@ mod erc1155_burnable {
         }
     }
 
-    #[external(v0)]
+    #[abi(embed_v0)]
     impl ERC1155MetadataURI of IERC1155MetadataURI<ContractState> {
         fn uri(self: @ContractState, id: u256) -> Span<felt252> {
             let uri_len: usize = self.ERC1155_token_uri_len.read(id);
