@@ -122,7 +122,7 @@ mod whitelist_mint {
 
         fn upgrade(ref self: ContractState, class_hash: ClassHash) {
             self.accesscontrol.assert_only_role(RoleUpgrader);
-            self.upgradeable._upgrade(class_hash);
+            self.upgradeable.upgrade(class_hash);
         }
     }
 
