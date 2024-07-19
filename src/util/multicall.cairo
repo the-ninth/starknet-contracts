@@ -16,7 +16,6 @@ trait IMulticall<TContractState> {
 mod multicall {
     
     use starknet::SyscallResultTrait;
-    use array::SpanTrait;
     use starknet::syscalls::call_contract_syscall;
     use super::{Call, IMulticall};
 

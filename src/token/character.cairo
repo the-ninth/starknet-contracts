@@ -1,4 +1,5 @@
-use starknet::{ContractAddress, ClassHash, StorePacking};
+use starknet::{ContractAddress, ClassHash};
+use starknet::storage_access::StorePacking;
 use ninth::math::pow_2;
 
 #[derive(Copy, Drop, Serde)]
@@ -68,16 +69,12 @@ mod character {
 
     use ninth::erc::ierc165::{IERC165, IERC165DispatcherTrait, IERC165Dispatcher, IERC165Id};
     use ninth::erc::ierc721::{IERC721, IERC721Enumerable, IERC721TokenReceiverDispatcherTrait, IERC721TokenReceiverDispatcher, IERC721TokenReceiverId, IERC721Id, IERC721MetadataId, IERC721EnumerableId};
-    use ecdsa::check_ecdsa_signature;
-    use starknet::{ContractAddress, ClassHash, StorePacking};
+    use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starknet::syscalls::replace_class_syscall;
-    use poseidon::poseidon_hash_span;
-    use zeroable::Zeroable;
-    use option::OptionTrait;
-    use array::ArrayTrait;
-    use result::ResultTrait;
-    use traits::{Into, TryInto};
+    use core::ecdsa::check_ecdsa_signature;
+    use core::poseidon::poseidon_hash_span;
+    use core::num::traits::zero::Zero;
     use super::{ICharacter, IAccessControl, CharacterSkeleton, CharacterSkeletonStorePacking};
 
     const IAccountId: u32 = 0xa66bd575;
@@ -337,7 +334,7 @@ mod character {
             let owner = self.ERC721_owners.read(token_id);
             match owner.is_zero() {
                 bool::False(()) => owner,
-                bool::True(()) => panic_with_felt252('ERC721: invalid token ID')
+                bool::True(()) => panic!("ERC721: invalid token ID")
             }
         }
 
@@ -376,7 +373,7 @@ mod character {
             // Update token_id owner
             self.ERC721_owners.write(token_id, to);
             // Emit event
-            self.emit(Transfer{from: Zeroable::zero(), to: to, token_id: token_id});
+            self.emit(Transfer{from: Zero::zero(), to: to, token_id: token_id});
         }
 
         fn _transfer(ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256) {
@@ -389,7 +386,7 @@ mod character {
             assert(from == owner, 'ERC721: wrong sender');
 
             // Implicit clear approvals, no need to emit an event
-            self.ERC721_token_approvals.write(token_id, Zeroable::zero());
+            self.ERC721_token_approvals.write(token_id, Zero::zero());
             // Update balances
             self.ERC721_balances.write(from, self.ERC721_balances.read(from) - 1_u256);
             self.ERC721_balances.write(to, self.ERC721_balances.read(to) + 1_u256);
@@ -407,13 +404,13 @@ mod character {
             self._remove_token_from_owner_enumeration(owner, token_id);
             self._remove_token_from_all_tokens_enumeration(token_id);
             // Implicit clear approvals, no need to emit an event
-            self.ERC721_token_approvals.write(token_id, Zeroable::zero());
+            self.ERC721_token_approvals.write(token_id, Zero::zero());
             // Update balances
             self.ERC721_balances.write(owner, self.ERC721_balances.read(owner) - 1_u256);
             // Delete owner
-            self.ERC721_owners.write(token_id, Zeroable::zero());
+            self.ERC721_owners.write(token_id, Zero::zero());
             // Emit event
-            self.emit(Transfer{from: owner, to: Zeroable::zero(), token_id: token_id});
+            self.emit(Transfer{from: owner, to: Zero::zero(), token_id: token_id});
         }
 
         // enumerabale

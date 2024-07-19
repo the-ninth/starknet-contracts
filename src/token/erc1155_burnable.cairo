@@ -1,7 +1,7 @@
 use starknet::{ContractAddress, ClassHash};
 
 #[starknet::interface]
-trait IAccessControl<TContractState> {
+pub trait IAccessControl<TContractState> {
     fn hasRole(self: @TContractState, role: felt252, account: ContractAddress) -> bool;
     fn getRoleAdmin(self: @TContractState, role: felt252) -> felt252;
     fn grantRole(ref self: TContractState, role: felt252, account: ContractAddress);
@@ -10,7 +10,7 @@ trait IAccessControl<TContractState> {
 }
 
 #[starknet::interface]
-trait IERC1155Burnable<TContractState> {
+pub trait IERC1155Burnable<TContractState> {
     fn setTokenUri(ref self: TContractState, id: u256, uri: Span<felt252>);
     fn burn(ref self: TContractState, id: u256, value: u256);
     fn burnBatch(ref self: TContractState, ids: Span<u256>, values: Span<u256>);
@@ -30,11 +30,7 @@ mod erc1155_burnable {
     use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starknet::syscalls::replace_class_syscall;
-    use zeroable::Zeroable;
-    use option::OptionTrait;
-    use array::{ArrayTrait, SpanTrait};
-    use result::ResultTrait;
-    use traits::{Into, TryInto};
+    use core::num::traits::zero::Zero;
 
     const IAccountId: u32 = 0xa66bd575;
 
@@ -279,7 +275,7 @@ mod erc1155_burnable {
     impl ERC1155Interal of IERC1155InternalTrait {
 
         fn __transfer(ref self: ContractState, from: ContractAddress, to: ContractAddress, id: u256, value: u256) {
-            assert(to != Zeroable::zero(), 'transfer to the zero address');
+            assert(to.is_non_zero(), 'transfer to the zero address');
             let from_balance = self.ERC1155_balances.read((id, from));
             assert(from_balance >= value, 'insufficient balance');
             let new_from_balance = from_balance - value;
@@ -346,23 +342,21 @@ mod erc1155_burnable {
         }
 
         fn _mint(ref self: ContractState, operator: ContractAddress, to: ContractAddress, id: u256, value: u256) {
-            let zero_address: ContractAddress = Zeroable::zero();
-            assert(to != zero_address, 'mint to the zero address');
+            assert(to.is_non_zero(), 'mint to the zero address');
             let to_balance = self.ERC1155_balances.read((id, to));
             let new_to_balance = to_balance + value;
             self.ERC1155_balances.write((id, to), new_to_balance);
 
-            self.emit(TransferSingle{operator: operator, from: zero_address, to: to, id: id, value: value});
+            self.emit(TransferSingle{operator: operator, from: Zero::zero(), to: to, id: id, value: value});
         }
 
         fn _safe_mint(ref self: ContractState, operator: ContractAddress, to: ContractAddress, id: u256, value: u256, data: Span<felt252>) {
             self._mint(operator, to, id, value);
-            assert(self.__check_on_erc1155_received(operator, Zeroable::zero(), to, id, value, data), 'unsafe mint');
+            assert(self.__check_on_erc1155_received(operator, Zero::zero(), to, id, value, data), 'unsafe mint');
         }
 
         fn _mint_batch(ref self: ContractState, operator: ContractAddress, to: ContractAddress, ids: Span<u256>, values: Span<u256>) {
-            let zero_address: ContractAddress = Zeroable::zero();
-            assert(to != zero_address, 'mint to the zero address');
+            assert(to.is_non_zero(), 'mint to the zero address');
             let len = ids.len();
             assert(len == values.len(), 'ids and values length mismatch');
 
@@ -379,29 +373,27 @@ mod erc1155_burnable {
             };
 
             let operator = get_caller_address();
-            self.emit(TransferBatch{operator: operator, from: zero_address, to: to, ids: ids, values: values});
+            self.emit(TransferBatch{operator: operator, from: Zero::zero(), to: to, ids: ids, values: values});
         }
 
         fn _safe_mint_batch(ref self: ContractState, operator: ContractAddress, to: ContractAddress, ids: Span<u256>, values: Span<u256>, data: Span<felt252>) {
             self._mint_batch(operator, to, ids, values);
-            assert(self.__check_on_erc1155_batch_received(operator, Zeroable::zero(), to, ids, values, data), 'unsafe mint batch');
+            assert(self.__check_on_erc1155_batch_received(operator, Zero::zero(), to, ids, values, data), 'unsafe mint batch');
         }
 
         fn _burn(ref self: ContractState, operator: ContractAddress, from: ContractAddress, id: u256, value: u256) {
-            let zero_address: ContractAddress = Zeroable::zero();
-            assert(from != zero_address, 'burn from the zero address');
+            assert(from.is_non_zero(), 'burn from the zero address');
             let from_balance = self.ERC1155_balances.read((id, from));
             assert(from_balance >= value, 'burn value exceeds balance');
             let new_from_balance = from_balance - value;
             self.ERC1155_balances.write((id, from), new_from_balance);
             
-            self.emit(TransferSingle{operator: operator, from: from, to: zero_address, id: id, value: value});
+            self.emit(TransferSingle{operator: operator, from: from, to: Zero::zero(), id: id, value: value});
             return ();
         }
 
         fn _burn_batch(ref self: ContractState, operator: ContractAddress, from: ContractAddress, ids: Span<u256>, values: Span<u256>) {
-            let zero_address: ContractAddress = Zeroable::zero();
-            assert(from != zero_address, 'burn from the zero address');
+            assert(from.is_non_zero(), 'burn from the zero address');
             let len = ids.len();
             assert(len == values.len(), 'ids and values length mismatch');
             let mut i: usize = 0;
@@ -418,13 +410,12 @@ mod erc1155_burnable {
                 i += 1;
             };
 
-            self.emit(TransferBatch{operator: operator, from: from, to: zero_address, ids: ids, values: values});
+            self.emit(TransferBatch{operator: operator, from: from, to: Zero::zero(), ids: ids, values: values});
             return ();
         }
 
         fn _set_approval_for_all(ref self: ContractState, owner: ContractAddress, operator: ContractAddress, approved: bool) {
-            let zero_address: ContractAddress = Zeroable::zero();
-            assert(operator != zero_address, 'approve for zero address');
+            assert(operator.is_non_zero(), 'approve for zero address');
             assert(owner != operator, 'approve for self');
             self.ERC1155_operator_approvals.write((owner, operator), approved);
             self.emit(ApprovalForAll{owner: owner, operator: operator, approved: approved});

@@ -1,12 +1,12 @@
 use starknet::ContractAddress;
 
-const IERC721TokenReceiverId: u32 = 0x150b7a02;
-const IERC721Id: u32 = 0x80ac58cd;
-const IERC721MetadataId: u32 = 0x5b5e139f;
-const IERC721EnumerableId: u32 = 0x780e9d63;
+pub const IERC721TokenReceiverId: u32 = 0x150b7a02;
+pub const IERC721Id: u32 = 0x80ac58cd;
+pub const IERC721MetadataId: u32 = 0x5b5e139f;
+pub const IERC721EnumerableId: u32 = 0x780e9d63;
 
 #[starknet::interface]
-trait IERC721<TContractState> {
+pub trait IERC721<TContractState> {
     fn name(self: @TContractState) -> felt252;
     fn symbol(self: @TContractState) -> felt252;
     fn balanceOf(self: @TContractState, account: ContractAddress) -> u256;
@@ -21,13 +21,13 @@ trait IERC721<TContractState> {
 }
 
 #[starknet::interface]
-trait IERC721Enumerable<TContractState> {
+pub trait IERC721Enumerable<TContractState> {
     fn totalSupply(self: @TContractState) -> u256;
     fn tokenByIndex(self: @TContractState, index: u256) -> u256;
     fn tokenOfOwnerByIndex(self: @TContractState, owner: ContractAddress, index: u256) -> u256;
 }
 
 #[starknet::interface]
-trait IERC721TokenReceiver<TContractState> {
+pub trait IERC721TokenReceiver<TContractState> {
     fn onERC721Received(ref self: TContractState, operator: ContractAddress, from: ContractAddress, token_id: u256, data: Span<felt252>) -> u32;
 }

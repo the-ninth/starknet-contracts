@@ -1,7 +1,7 @@
 use starknet::{ContractAddress, ClassHash};
 
 #[starknet::interface]
-trait IRandomProducer<TContractState> {
+pub trait IRandomProducer<TContractState> {
     fn getOwner(self: @TContractState) -> ContractAddress;
     fn getOperator(self: @TContractState) -> ContractAddress;
     fn getRandomnessRequest(self: @TContractState, request_id: u128) -> Request;
@@ -14,7 +14,7 @@ trait IRandomProducer<TContractState> {
 }
 
 #[starknet::interface]
-trait IRandomConsumer<TContractState> {
+pub trait IRandomConsumer<TContractState> {
     fn fulfillRandomness(ref self: TContractState, request_id: u128, randomness: u128);
 }
 
@@ -29,12 +29,10 @@ struct Request {
 mod random_producer {
 
     use super::{IRandomProducer, IRandomConsumerDispatcher, IRandomConsumerDispatcherTrait, Request};
-    use box::BoxTrait;
-    use result::ResultTrait;
     use starknet::{ContractAddress, ClassHash, get_caller_address};
-    use starknet::info::get_block_info;
+    use starknet::get_block_info;
     use starknet::syscalls::replace_class_syscall;
-    use zeroable::{Zeroable, NonZero};
+    use core::num::traits::zero::Zero;
 
     #[storage]
     struct Storage {

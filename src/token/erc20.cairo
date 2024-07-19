@@ -9,9 +9,8 @@ trait IUpgrade<TContractState> {
 mod ERC20 {
     use ninth::erc::ierc20::IERC20;
     use ninth::token::imintable::IMintable;
-    use integer::BoundedInt;
-    use zeroable::Zeroable;
-    use result::ResultTrait;
+    use core::integer::BoundedInt;
+    use core::num::traits::zero::Zero;
     use starknet::{ContractAddress, ClassHash};
     use starknet::{get_caller_address};
     use starknet::syscalls::replace_class_syscall;
@@ -154,14 +153,14 @@ mod ERC20 {
         assert(!recipient.is_zero(), 'ERC20: mint to 0');
         self.ERC20_total_supply.write(self.ERC20_total_supply.read() + amount);
         self.ERC20_balances.write(recipient, self.ERC20_balances.read(recipient) + amount);
-        self.emit(Transfer { from: Zeroable::zero(), to: recipient, amount: amount});
+        self.emit(Transfer { from: Zero::zero(), to: recipient, amount: amount});
     }
 
     fn _burn(ref self: ContractState, account: ContractAddress, amount: u256) {
         assert(!account.is_zero(), 'ERC20: burn from 0');
         self.ERC20_total_supply.write(self.ERC20_total_supply.read() - amount);
         self.ERC20_balances.write(account, self.ERC20_balances.read(account) - amount);
-        self.emit(Transfer { from: account, to: Zeroable::zero(), amount: amount});
+        self.emit(Transfer { from: account, to: Zero::zero(), amount: amount});
     }
 
     fn _approve(ref self: ContractState, owner: ContractAddress, spender: ContractAddress, amount: u256) {

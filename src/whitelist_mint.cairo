@@ -1,4 +1,4 @@
-use starknet::{ClassHash, ContractAddress, StorePacking};
+use starknet::{ClassHash, ContractAddress, storage_access::StorePacking};
 
 #[starknet::interface]
 trait IWhitelistMint<TContractState> {
@@ -36,7 +36,7 @@ mod whitelist_mint {
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
     use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp};
-    use poseidon::poseidon_hash_span;
+    use core::poseidon::poseidon_hash_span;
     use super::{IWhitelistMint, Whitelist};
     use ninth::token::erc1155_burnable::{IERC1155BurnableDispatcher, IERC1155BurnableDispatcherTrait};
 

@@ -71,7 +71,7 @@
 //     }
 // }
 
-fn pow_2(exponent: u128) -> u128 {
+pub fn pow_2(exponent: u128) -> u128 {
     assert(exponent%8==0 && exponent<128, 'not supported expoent');
     if exponent == 0 {
         1

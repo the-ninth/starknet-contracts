@@ -45,14 +45,9 @@ trait ISeance<TContractState> {
 #[starknet::contract]
 mod seance {
     use super::{Pentagram, PentagramPrayer, ISeance};
-    use array::ArrayTrait;
-    use box::BoxTrait;
-    use cmp::{min, max};
-    use integer::{u512, u512_safe_div_rem_by_u256, u256_try_as_non_zero};
-    use zeroable::{Zeroable, NonZero, IsZeroResult};
-    use traits::TryInto;
-    use option::OptionTrait;
-    use result::ResultTrait;
+    use core::cmp::{min, max};
+    use core::integer::{u512, u512_safe_div_rem_by_u256};
+    use core::num::traits::zero::Zero;
     use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp, get_contract_address, get_execution_info, contract_address_const};
     use starknet::syscalls::replace_class_syscall;
     use ninth::erc::ierc20::{IERC20DispatcherTrait, IERC20Dispatcher};
@@ -417,7 +412,7 @@ mod seance {
             assert(hit_prayer.is_non_zero(), 'can not find the chosen one');
             let total_value = pentagram.value * 5_u256;
             let total_value_u512: u512 = u512{limb0: total_value.low, limb1: total_value.high, limb2: 0, limb3: 0};
-            let (q, _) = u512_safe_div_rem_by_u256(total_value_u512, u256_try_as_non_zero(4).unwrap());
+            let (q, _) = u512_safe_div_rem_by_u256(total_value_u512, 4_u256.try_into().unwrap());
             let distribute_value = u256{low: q.limb0, high: q.limb1};
             let mut i = 0_u8;
             loop {

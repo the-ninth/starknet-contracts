@@ -28,11 +28,7 @@ mod mystery_box {
     use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starknet::syscalls::replace_class_syscall;
-    use zeroable::Zeroable;
-    use option::OptionTrait;
-    use array::{ArrayTrait};
-    use result::ResultTrait;
-    use traits::{Into, TryInto};
+    use core::num::traits::zero::Zero;
 
     const IAccountId: u32 = 0xa66bd575;
 
@@ -301,7 +297,7 @@ mod mystery_box {
         let owner = self.ERC721_owners.read(token_id);
         match owner.is_zero() {
             bool::False(()) => owner,
-            bool::True(()) => panic_with_felt252('ERC721: invalid token ID')
+            bool::True(()) => panic!("ERC721: invalid token ID")
         }
     }
 
@@ -336,7 +332,7 @@ mod mystery_box {
         // Update token_id owner
         self.ERC721_owners.write(token_id, to);
         // Emit event
-        self.emit(Transfer{from: Zeroable::zero(), to: to, token_id: token_id});
+        self.emit(Transfer{from: Zero::zero(), to: to, token_id: token_id});
     }
 
     fn _transfer(ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256) {
@@ -345,7 +341,7 @@ mod mystery_box {
         assert(from == owner, 'ERC721: wrong sender');
 
         // Implicit clear approvals, no need to emit an event
-        self.ERC721_token_approvals.write(token_id, Zeroable::zero());
+        self.ERC721_token_approvals.write(token_id, Zero::zero());
         // Update balances
         self.ERC721_balances.write(from, self.ERC721_balances.read(from) - 1_u256);
         self.ERC721_balances.write(to, self.ERC721_balances.read(to) + 1_u256);
@@ -359,13 +355,13 @@ mod mystery_box {
     fn _burn(ref self: ContractState, token_id: u256) {
         let owner = _owner_of(@self, token_id);
         // Implicit clear approvals, no need to emit an event
-        self.ERC721_token_approvals.write(token_id, Zeroable::zero());
+        self.ERC721_token_approvals.write(token_id, Zero::zero());
         // Update balances
         self.ERC721_balances.write(owner, self.ERC721_balances.read(owner) - 1_u256);
         // Delete owner
-        self.ERC721_owners.write(token_id, Zeroable::zero());
+        self.ERC721_owners.write(token_id, Zero::zero());
         // Emit event
-        self.emit(Transfer{from: owner, to: Zeroable::zero(), token_id: token_id});
+        self.emit(Transfer{from: owner, to: Zero::zero(), token_id: token_id});
     }
 
     fn _assert_only_role(self: @ContractState, role: felt252) {
