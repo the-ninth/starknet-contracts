@@ -7,6 +7,9 @@ pub mod token {
     pub mod erc1155_burnable;
     mod fist_flesh;
     mod character;
+    pub mod component {
+        pub mod erc721_enumerable;
+    }
 }
 mod seance;
 pub mod random;
@@ -24,3 +27,6 @@ mod campaign {
 }
 pub mod math;
 mod whitelist_mint;
+pub mod interface {
+    pub mod ierc721_enumerable;
+}
