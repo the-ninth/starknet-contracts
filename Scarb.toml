@@ -11,6 +11,8 @@ cairo-version = "^2.6.4"
 starknet = "^2.6.4"
 openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts", tag = "v0.14.0"}
 
+[lib]
+
 [[target.starknet-contract]]
 # Enable Sierra codegen.
 sierra = true
