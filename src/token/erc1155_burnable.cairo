@@ -41,11 +41,17 @@ mod erc1155_burnable {
 
     #[storage]
     struct Storage {
+        #[feature("deprecated_legacy_map")]
         ERC1155_balances: LegacyMap<(u256, ContractAddress), u256>,
+        #[feature("deprecated_legacy_map")]
         ERC1155_operator_approvals: LegacyMap<(ContractAddress, ContractAddress), bool>,
+        #[feature("deprecated_legacy_map")]
         ERC1155_token_uri_len: LegacyMap<u256, usize>,
+        #[feature("deprecated_legacy_map")]
         ERC1155_token_uri: LegacyMap<(u256, usize), felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_admin: LegacyMap<felt252, felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_member: LegacyMap<(felt252, ContractAddress), bool>,
     }
 

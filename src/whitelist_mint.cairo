@@ -35,8 +35,7 @@ mod whitelist_mint {
     use openzeppelin::access::accesscontrol::accesscontrol::AccessControlComponent;
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::upgrades::upgradeable::UpgradeableComponent;
-    use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp};
-    use core::poseidon::poseidon_hash_span;
+    use starknet::{ContractAddress, ClassHash, get_caller_address};
     use super::{IWhitelistMint, Whitelist};
     use ninth::token::erc1155_burnable::{IERC1155BurnableDispatcher, IERC1155BurnableDispatcherTrait};
 
@@ -71,6 +70,7 @@ mod whitelist_mint {
 
     #[storage]
     struct Storage {
+        #[feature("deprecated_legacy_map")]
         available_mint: LegacyMap<(ContractAddress, u256), Whitelist>, // <(player, erc1155 contract, token id), total_mintable>
         mintable_erc1155: IERC1155BurnableDispatcher,
         

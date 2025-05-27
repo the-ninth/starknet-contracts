@@ -48,7 +48,7 @@ mod seance {
     use core::cmp::{min, max};
     use core::integer::{u512, u512_safe_div_rem_by_u256};
     use core::num::traits::zero::Zero;
-    use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp, get_contract_address, get_execution_info, contract_address_const};
+    use starknet::{ContractAddress, ClassHash, get_caller_address, get_block_timestamp, get_execution_info};
     use starknet::syscalls::replace_class_syscall;
     use ninth::erc::ierc20::{IERC20DispatcherTrait, IERC20Dispatcher};
     use ninth::random::{IRandomProducerDispatcherTrait, IRandomProducerDispatcher};
@@ -65,13 +65,20 @@ mod seance {
     struct Storage {
         Seance_owner: ContractAddress,
         Seance_operator: ContractAddress,
+        #[feature("deprecated_legacy_map")]
         Seance_token_option_enabled: LegacyMap<ContractAddress, bool>,
+        #[feature("deprecated_legacy_map")]
         Seance_token_option_values_length: LegacyMap<ContractAddress, usize>,
+        #[feature("deprecated_legacy_map")]
         Seance_token_option_values: LegacyMap<(ContractAddress, usize), u256>,
         Seance_pentagram_counter: u128,
+        #[feature("deprecated_legacy_map")]
         Seance_pentagrams: LegacyMap<u128, Pentagram>,
+        #[feature("deprecated_legacy_map")]
         Seance_pentagram_prayers_length: LegacyMap<u128, u8>,
+        #[feature("deprecated_legacy_map")]
         Seance_pentagram_prayers_by_position: LegacyMap<(u128, u8), PentagramPrayer>, // based on 1
+        #[feature("deprecated_legacy_map")]
         Seance_pentagram_num_by_request_id: LegacyMap<u128, u128>,
         Seance_random_producer: ContractAddress,
         // Seance_token_fees: LegacyMap<ContractAddress, u256>,
@@ -442,7 +449,7 @@ mod seance {
             let mut i: u8 = 1;
             loop {
                 if i > length {
-                    break (contract_address_const::<0>(), 0);
+                    break (0.try_into().unwrap(), 0);
                 }
                 let prayer = self.Seance_pentagram_prayers_by_position.read((pentagram_num, i));
                 if prayer.number_lower==hit_number || prayer.number_higher==hit_number {

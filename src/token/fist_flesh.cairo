@@ -21,7 +21,7 @@ mod fist_flesh {
 
     use super::{IAccessControl, IFistFlesh};
     use ninth::erc::ierc165::{IERC165, IERC165DispatcherTrait, IERC165Dispatcher, IERC165Id};
-    use ninth::erc::ierc721::{IERC721, IERC721Enumerable, IERC721TokenReceiverDispatcherTrait, IERC721TokenReceiverDispatcher, IERC721TokenReceiverId, IERC721Id, IERC721MetadataId, IERC721EnumerableId};
+    use ninth::erc::ierc721::{IERC721, IERC721TokenReceiverDispatcherTrait, IERC721TokenReceiverDispatcher, IERC721TokenReceiverId, IERC721Id, IERC721MetadataId};
     use starknet::{ContractAddress, ClassHash};
     use starknet::get_caller_address;
     use starknet::syscalls::replace_class_syscall;
@@ -37,13 +37,20 @@ mod fist_flesh {
     struct Storage {
         ERC721_name: felt252,
         ERC721_symbol: felt252,
+        #[feature("deprecated_legacy_map")]
         ERC721_owners: LegacyMap<u256, ContractAddress>,
+        #[feature("deprecated_legacy_map")]
         ERC721_balances: LegacyMap<ContractAddress, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721_token_approvals: LegacyMap<u256, ContractAddress>,
+        #[feature("deprecated_legacy_map")]
         ERC721_operator_approvals: LegacyMap<(ContractAddress, ContractAddress), bool>,
         ERC721_token_uri_len: usize,
+        #[feature("deprecated_legacy_map")]
         ERC721_token_uri: LegacyMap<usize, felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_admin: LegacyMap<felt252, felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_member: LegacyMap<(felt252, ContractAddress), bool>,
         FistFlesh_token_counter: u256,
     }

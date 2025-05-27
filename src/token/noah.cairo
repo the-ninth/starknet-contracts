@@ -20,7 +20,7 @@ mod noah {
     use ninth::erc::ierc20::IERC20;
     use ninth::token::imintable::IMintable;
     use super::IAccessControl;
-    use core::integer::BoundedInt;
+    use core::num::traits::Bounded;
     use core::num::traits::zero::Zero;
     use starknet::{ContractAddress, ClassHash};
     use starknet::{get_caller_address};
@@ -37,9 +37,13 @@ mod noah {
         ERC20_symbol: felt252,
         ERC20_decimals: u8,
         ERC20_total_supply: u256,
+        #[feature("deprecated_legacy_map")]
         ERC20_balances: LegacyMap<ContractAddress, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC20_allowances: LegacyMap<(ContractAddress, ContractAddress), u256>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_admin: LegacyMap<felt252, felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_member: LegacyMap<(felt252, ContractAddress), bool>,
     }
 
@@ -256,7 +260,7 @@ mod noah {
 
     fn _spend_allowance(ref self: ContractState, owner: ContractAddress, spender: ContractAddress, amount: u256) {
         let current_allowance = self.ERC20_allowances.read((owner, spender));
-        if current_allowance != BoundedInt::max() {
+        if current_allowance != Bounded::MAX {
             _approve(ref self, owner, spender, current_allowance - amount);
         }
     }

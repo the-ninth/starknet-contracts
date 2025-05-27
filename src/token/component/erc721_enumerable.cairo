@@ -5,10 +5,8 @@
 pub mod ERC721EnumerableComponent {
 
     use ninth::interface::ierc721_enumerable::{IERC721Enumerable, IERC721EnumerableCamel, IERC721_ENUMERABLE_ID};
-    use starknet::{ContractAddress, ClassHash};
-    use starknet::get_caller_address;
+    use starknet::{ContractAddress};
     use core::num::traits::Zero;
-    use core::option::OptionTrait;
 
     use openzeppelin::introspection::src5::SRC5Component::InternalTrait as SRC5InternalTrait;
     use openzeppelin::introspection::src5::SRC5Component::SRC5Impl;
@@ -19,9 +17,13 @@ pub mod ERC721EnumerableComponent {
     #[storage]
     struct Storage {
         ERC721Enumerable_all_tokens_len: u256,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_all_tokens: LegacyMap<u256, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_all_tokens_index: LegacyMap<u256, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_owned_tokens: LegacyMap<(ContractAddress, u256), u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_owned_tokens_index: LegacyMap<u256, u256>,
     }
 

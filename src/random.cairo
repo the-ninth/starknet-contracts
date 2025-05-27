@@ -37,9 +37,11 @@ mod random_producer {
     #[storage]
     struct Storage {
         RandomProducer_request_id_counter: u128,
+        #[feature("deprecated_legacy_map")]
         RandomProducer_requests: LegacyMap<u128, Request>,
         RandomProducer_owner: ContractAddress,
         RandomProducer_operator: ContractAddress,
+        #[feature("deprecated_legacy_map")]
         RandomProducer_consumers: LegacyMap<ContractAddress, bool>,
     }
 

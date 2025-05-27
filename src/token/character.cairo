@@ -86,23 +86,37 @@ mod character {
     struct Storage {
         ERC721_name: felt252,
         ERC721_symbol: felt252,
+        #[feature("deprecated_legacy_map")]
         ERC721_owners: LegacyMap<u256, ContractAddress>,
+        #[feature("deprecated_legacy_map")]
         ERC721_balances: LegacyMap<ContractAddress, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721_token_approvals: LegacyMap<u256, ContractAddress>,
+        #[feature("deprecated_legacy_map")]
         ERC721_operator_approvals: LegacyMap<(ContractAddress, ContractAddress), bool>,
+        #[feature("deprecated_legacy_map")]
         ERC721_token_uri: LegacyMap<u256, felt252>,
         ERC721Enumerable_all_tokens_len: u256,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_all_tokens: LegacyMap<u256, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_all_tokens_index: LegacyMap<u256, u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_owned_tokens: LegacyMap<(ContractAddress, u256), u256>,
+        #[feature("deprecated_legacy_map")]
         ERC721Enumerable_owned_tokens_index: LegacyMap<u256, u256>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_admin: LegacyMap<felt252, felt252>,
+        #[feature("deprecated_legacy_map")]
         AccessControl_role_member: LegacyMap<(felt252, ContractAddress), bool>,
 
         sign_public_key: felt252,
         token_counter: u256,
+        #[feature("deprecated_legacy_map")]
         token_character_skeletons: LegacyMap<u256, CharacterSkeleton>,
+        #[feature("deprecated_legacy_map")]
         token_uris: LegacyMap<(u256, usize), felt252>,
+        #[feature("deprecated_legacy_map")]
         token_uri_len: LegacyMap<u256, usize>,
     }
 

@@ -74,8 +74,10 @@ mod chrismas {
 
     #[storage]
     struct Storage {
+        #[feature("deprecated_legacy_map")]
         players: LegacyMap<ContractAddress, Player>,
         day_limit: u32,
+        #[feature("deprecated_legacy_map")]
         day_count: LegacyMap<u32, u32>,
         mintable_erc1155: IERC1155BurnableDispatcher,
         erc1155_id: u256,
